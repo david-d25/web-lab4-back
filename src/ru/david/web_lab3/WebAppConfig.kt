@@ -34,14 +34,17 @@ open class WebAppConfig {
     private val PROP_ENTITYMANAGER_PACKAGES_TO_SCAN = "db.entitymanager.packages_to_scan"
     private val PROP_HIBERNATE_HBM2DDL_AUTO = "db.hibernate.hbm2ddl.auto"
 
-    @Bean
-    open fun preSalt() = "DJHUYGD7DFG**)ADGHihFhi0F9uFS6tfss^FG4s5F7fsusfhgs9*IF"
-
-    @Bean
-    open fun postSalt() = "IEOHiohG)(hE*(*EGHUG&FV*DFT&DRF$%EDF5ASEFS*(*FHSIORFGH"
+    private val PROP_SERVER_PRE_SALT = "server.pre_salt"
+    private val PROP_SERVER_POST_SALT = "server.post_salt"
 
     @Resource
     private val env: Environment? = null
+
+    @Bean
+    open fun preSalt(): String = env!!.getRequiredProperty(PROP_SERVER_PRE_SALT)
+
+    @Bean
+    open fun postSalt(): String = env!!.getRequiredProperty(PROP_SERVER_POST_SALT)
 
     @Bean
     open fun dataSource(): DataSource {
