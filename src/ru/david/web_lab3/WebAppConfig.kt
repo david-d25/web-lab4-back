@@ -16,6 +16,17 @@ import java.util.*
 import javax.annotation.Resource
 import javax.sql.DataSource
 
+const val PROP_DATABASE_DRIVER = "db.driver"
+const val PROP_DATABASE_PASSWORD = "db.password"
+const val PROP_DATABASE_URL = "db.url"
+const val PROP_DATABASE_USERNAME = "db.username"
+const val PROP_HIBERNATE_DIALECT = "db.hibernate.dialect"
+const val PROP_HIBERNATE_SHOW_SQL = "db.hibernate.show_sql"
+const val PROP_ENTITYMANAGER_PACKAGES_TO_SCAN = "db.entitymanager.packages_to_scan"
+const val PROP_HIBERNATE_HBM2DDL_AUTO = "db.hibernate.hbm2ddl.auto"
+
+const val PROP_SERVER_PRE_SALT = "server.pre_salt"
+const val PROP_SERVER_POST_SALT = "server.post_salt"
 
 @Configuration
 @EnableWebMvc
@@ -24,18 +35,6 @@ import javax.sql.DataSource
 @PropertySource("classpath:app.properties")
 @ComponentScan("ru.david.web_lab3")
 open class WebAppConfig {
-
-    private val PROP_DATABASE_DRIVER = "db.driver"
-    private val PROP_DATABASE_PASSWORD = "db.password"
-    private val PROP_DATABASE_URL = "db.url"
-    private val PROP_DATABASE_USERNAME = "db.username"
-    private val PROP_HIBERNATE_DIALECT = "db.hibernate.dialect"
-    private val PROP_HIBERNATE_SHOW_SQL = "db.hibernate.show_sql"
-    private val PROP_ENTITYMANAGER_PACKAGES_TO_SCAN = "db.entitymanager.packages_to_scan"
-    private val PROP_HIBERNATE_HBM2DDL_AUTO = "db.hibernate.hbm2ddl.auto"
-
-    private val PROP_SERVER_PRE_SALT = "server.pre_salt"
-    private val PROP_SERVER_POST_SALT = "server.post_salt"
 
     @Resource
     private val env: Environment? = null
