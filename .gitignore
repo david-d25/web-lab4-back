@@ -1,5 +1,5 @@
 .idea
 target
 
-./resources/app.properties
+resources/app.properties
 ~*.docx
