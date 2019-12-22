@@ -13,9 +13,9 @@
 
         <wildfly-home>C:\Wildfly\wildfly-18.0.1.Final</wildfly-home>
         <wildfly-hostname>127.0.0.1</wildfly-hostname>
-        <wildfly-port>9990</wildfly-port>
+        <wildfly-port>26390</wildfly-port>
         <wildfly-username>david</wildfly-username>
-        <wildfly-password>david</wildfly-password>
+        <wildfly-password>admin</wildfly-password>
 
         <kotlin.version>1.3.61</kotlin.version>
     </properties>
@@ -74,6 +74,12 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
             <version>1.3.61</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>2.10.1</version>
         </dependency>
     </dependencies>
 
