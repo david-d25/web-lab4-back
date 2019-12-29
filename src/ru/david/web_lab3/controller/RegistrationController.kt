@@ -1,6 +1,7 @@
 package ru.david.web_lab3.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import ru.david.web_lab3.dto.request.RegistrationConfirmationDto
@@ -13,11 +14,13 @@ class RegistrationController @Autowired constructor(private val userService: Use
 
     @ResponseBody
     @PostMapping("request")
+    @ResponseStatus(value = HttpStatus.OK)
     fun request(@RequestBody request: RegistrationRequestDto) =
             userService.requestRegistration(request.email, request.name, request.password)
 
     @ResponseBody
     @PostMapping("confirmation")
+    @ResponseStatus(value = HttpStatus.OK)
     fun confirm(@RequestBody request: RegistrationConfirmationDto) =
             userService.confirmRegistration(request.email, request.token)
 }

@@ -15,9 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import java.util.*
 import javax.annotation.Resource
-import javax.mail.Authenticator
-import javax.mail.PasswordAuthentication
-import javax.mail.Session
 import javax.sql.DataSource
 
 const val PROP_DATABASE_DRIVER = "db.driver"
@@ -32,12 +29,8 @@ const val PROP_HIBERNATE_HBM2DDL_AUTO = "db.hibernate.hbm2ddl.auto"
 const val PROP_SERVER_PRE_SALT = "server.pre_salt"
 const val PROP_SERVER_POST_SALT = "server.post_salt"
 
-const val PROP_SMTP_HOST = "smtp.host"
-const val PROP_SMTP_PORT = "smtp.port"
-const val PROP_SMTP_SSL = "smtp.ssl"
-const val PROP_SMTP_USERNAME = "smtp.username"
-const val PROP_SMTP_PASSWORD = "smtp.password"
-const val PROP_SMTP_FROM = "smtp.from"
+const val PROP_MAIL_API_KEY = "mail.api_key"
+const val PROP_MAIL_FROM = "mail.from"
 
 @Configuration
 @EnableWebMvc
@@ -58,7 +51,10 @@ open class WebAppConfig {
     open fun postSalt(): String = env!!.getRequiredProperty(PROP_SERVER_POST_SALT)
 
     @Bean
-    open fun emailFrom(): String = env!!.getRequiredProperty(PROP_SMTP_FROM)
+    open fun emailFrom(): String = env!!.getRequiredProperty(PROP_MAIL_FROM)
+
+    @Bean
+    open fun mailApiKey(): String = env!!.getRequiredProperty(PROP_MAIL_API_KEY)
 
     @Bean
     open fun dataSource(): DataSource {
@@ -87,29 +83,6 @@ open class WebAppConfig {
         val transactionManager = JpaTransactionManager()
         transactionManager.entityManagerFactory = entityManagerFactory()!!.getObject()
         return transactionManager
-    }
-
-    @Bean
-    open fun mailSession(): Session {
-        env!!
-
-        val properties = Properties()
-        properties["mail.smtp.host"] = env.getRequiredProperty(PROP_SMTP_HOST)
-        properties["mail.smtp.port"] = env.getRequiredProperty(PROP_SMTP_PORT)
-        properties["mail.smtp.auth"] = "true"
-        properties["mail.smtp.ssl.enable"] = env.getRequiredProperty(PROP_SMTP_SSL)
-        properties["mail.mime.charset"] = "UTF-16"
-        properties["mail.smtp.socketFactory.class"] = "javax.net.ssl.SSLSocketFactory"
-
-        val mailAuth: Authenticator = object : Authenticator() {
-            override fun getPasswordAuthentication(): PasswordAuthentication {
-                return PasswordAuthentication(
-                        env.getRequiredProperty(PROP_SMTP_USERNAME),
-                        env.getRequiredProperty(PROP_SMTP_PASSWORD))
-            }
-        }
-
-        return Session.getInstance(properties, mailAuth)
     }
 
     private fun getHibernateProperties(): Properties {

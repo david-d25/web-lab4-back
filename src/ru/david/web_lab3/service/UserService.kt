@@ -1,10 +1,13 @@
 package ru.david.web_lab3.service
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.validation.DataBinder
 import ru.david.web_lab3.entity.RegistrationToken
+import ru.david.web_lab3.entity.User
 import ru.david.web_lab3.exception.InvalidDataException
+import ru.david.web_lab3.exception.TokenNotFoundException
 import ru.david.web_lab3.exception.UserExistsException
 import ru.david.web_lab3.mapping.Base64UrlEncodedMapper
 import ru.david.web_lab3.provider.RegistrationTokenSecretKeyProvider
@@ -19,7 +22,8 @@ class UserService @Autowired constructor(private val userRepository: UserReposit
                                          private val registrationTokenSecretKeyProvider: RegistrationTokenSecretKeyProvider,
                                          private val eMailService: EMailService,
                                          private val base64UrlEncodedMapper: Base64UrlEncodedMapper,
-                                         private val registrationTokenValidator: RegistrationTokenValidator) {
+                                         private val registrationTokenValidator: RegistrationTokenValidator,
+                                         private val emailFrom: String) {
 
     fun requestRegistration(email: String, name: String, password: String) {
         if (userRepository.findById(email).isPresent || registrationTokenRepository.findById(email).isPresent)
@@ -40,13 +44,24 @@ class UserService @Autowired constructor(private val userRepository: UserReposit
         if (dataBinder.bindingResult.hasErrors())
             throw InvalidDataException()
 
-        registrationTokenRepository.save(token)
-        eMailService.sendEmail(email, "<a href=\"127.0.0.1/confirm-reg?target=$email" +
+        eMailService.sendEmail(emailFrom, email, "<a href=\"127.0.0.1/confirm-reg?target=$email" +
                 "&token=${base64UrlEncodedMapper.bytesToBase64UrlEncoded(secretKey)}\">CLICK</a> " +
                 "here to confirm registration")
+        registrationTokenRepository.save(token)
     }
 
-    fun confirmRegistration(email: String, password: ByteArray) {
-
+    fun confirmRegistration(email: String, secretKey: ByteArray) {
+        val tokenOptional = registrationTokenRepository.findById(email)
+        if (tokenOptional.isPresent) {
+            val token = tokenOptional.get()
+            if (token.secretKey.contentEquals(secretKey)) {
+                val user = User(token.email, token.name, token.passwordHash)
+                userRepository.save(user)
+            } else {
+                throw TokenNotFoundException()
+            }
+        } else {
+            throw TokenNotFoundException()
+        }
     }
 }
