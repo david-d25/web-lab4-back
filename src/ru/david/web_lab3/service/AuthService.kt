@@ -27,7 +27,7 @@ class AuthService @Autowired constructor(private val userTokenRepository: UserTo
                         token = token
                 )
                 userTokenRepository.save(userToken)
-                return LoginResponse(token)
+                return LoginResponse(user.name!!, token)
             } else {
                 throw InvalidCredentialsException()
             }
