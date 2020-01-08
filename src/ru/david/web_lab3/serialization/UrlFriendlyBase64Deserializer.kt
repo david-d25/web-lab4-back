@@ -6,17 +6,14 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import ru.david.web_lab3.dto.request.RegistrationConfirmationDto
 import ru.david.web_lab3.mapping.Base64UrlEncodedMapper
 
 @Component
-class RegistrationConfirmationDtoDeserializer @Autowired constructor(
+class UrlFriendlyBase64Deserializer @Autowired constructor(
         private val base64UrlEncodedMapper: Base64UrlEncodedMapper
-) : JsonDeserializer<RegistrationConfirmationDto>() {
-    override fun deserialize(jsonParser: JsonParser?, deserializationContext: DeserializationContext?): RegistrationConfirmationDto {
+) : JsonDeserializer<ByteArray>() {
+    override fun deserialize(jsonParser: JsonParser?, deserializationContext: DeserializationContext?): ByteArray {
         val node: JsonNode = jsonParser!!.codec.readTree(jsonParser)
-        val email = node.get("email").textValue()
-        val token = base64UrlEncodedMapper.base64UrlEncodedToBytes(node.get("token").textValue())
-        return RegistrationConfirmationDto(email, token)
+        return base64UrlEncodedMapper.base64UrlEncodedToBytes(node.textValue())
     }
 }

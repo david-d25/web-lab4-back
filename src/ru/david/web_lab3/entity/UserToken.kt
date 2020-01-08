@@ -1,12 +1,10 @@
 package ru.david.web_lab3.entity
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 @Entity
-data class UserToken(@Id @GeneratedValue val id: Long = 0,
+@Table(name="person_token", schema = "s265472")
+data class UserToken(@Id @GeneratedValue val id: Long? = null,
                      @ManyToOne val user: User? = null,
                      val token: ByteArray? = ByteArray(0)) {
     override fun equals(other: Any?): Boolean {

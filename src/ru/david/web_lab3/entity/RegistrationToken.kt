@@ -3,8 +3,10 @@ package ru.david.web_lab3.entity
 import java.time.LocalDateTime
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
+@Table(name="reg_token", schema = "s265472")
 data class RegistrationToken(@Id val email: String? = null,
                              val name: String? = null,
                              val passwordHash: ByteArray = ByteArray(0),

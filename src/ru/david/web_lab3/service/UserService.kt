@@ -3,6 +3,7 @@ package ru.david.web_lab3.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.DataBinder
 import ru.david.web_lab3.entity.RegistrationToken
 import ru.david.web_lab3.entity.User
@@ -16,17 +17,17 @@ import ru.david.web_lab3.repository.UserRepository
 import ru.david.web_lab3.validation.RegistrationTokenValidator
 
 @Service
-class UserService @Autowired constructor(private val userRepository: UserRepository,
-                                         private val registrationTokenRepository: RegistrationTokenRepository,
-                                         private val passwordService: PasswordService,
-                                         private val registrationTokenSecretKeyProvider: RegistrationTokenSecretKeyProvider,
-                                         private val eMailService: EMailService,
-                                         private val base64UrlEncodedMapper: Base64UrlEncodedMapper,
-                                         private val registrationTokenValidator: RegistrationTokenValidator,
-                                         private val emailFrom: String) {
+open class UserService @Autowired constructor(private val userRepository: UserRepository,
+                                              private val registrationTokenRepository: RegistrationTokenRepository,
+                                              private val passwordService: PasswordService,
+                                              private val registrationTokenSecretKeyProvider: RegistrationTokenSecretKeyProvider,
+                                              private val eMailService: EMailService,
+                                              private val base64UrlEncodedMapper: Base64UrlEncodedMapper,
+                                              private val registrationTokenValidator: RegistrationTokenValidator,
+                                              private val emailFrom: String) {
 
     fun requestRegistration(email: String, name: String, password: String) {
-        if (userRepository.findById(email).isPresent || registrationTokenRepository.findById(email).isPresent)
+        if (userRepository.findById(email).isPresent ||registrationTokenRepository.findById(email).isPresent)
             throw UserExistsException()
 
         val secretKey = registrationTokenSecretKeyProvider.get()
@@ -50,13 +51,14 @@ class UserService @Autowired constructor(private val userRepository: UserReposit
         registrationTokenRepository.save(token)
     }
 
-    fun confirmRegistration(email: String, secretKey: ByteArray) {
+    open fun confirmRegistration(email: String, secretKey: ByteArray) {
         val tokenOptional = registrationTokenRepository.findById(email)
         if (tokenOptional.isPresent) {
             val token = tokenOptional.get()
             if (token.secretKey.contentEquals(secretKey)) {
                 val user = User(token.email, token.name, token.passwordHash)
                 userRepository.save(user)
+                registrationTokenRepository.deleteByEmail(email)
             } else {
                 throw TokenNotFoundException()
             }
