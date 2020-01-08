@@ -45,9 +45,11 @@ open class UserService @Autowired constructor(private val userRepository: UserRe
         if (dataBinder.bindingResult.hasErrors())
             throw InvalidDataException()
 
-        eMailService.sendEmail(emailFrom, email, "<a href=\"127.0.0.1/confirm-reg?target=$email" +
+        eMailService.sendEmail(emailFrom, email, "<a href=\"127.0.0.1/login" +
+                "?action=confirm_reg" +
+                "&target=$email" +
                 "&token=${base64UrlEncodedMapper.bytesToBase64UrlEncoded(secretKey)}\">CLICK</a> " +
-                "here to confirm registration")
+                "here to confirm the registration")
         registrationTokenRepository.save(token)
     }
 
