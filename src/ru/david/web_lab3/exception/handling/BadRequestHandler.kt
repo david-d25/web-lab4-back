@@ -4,13 +4,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.servlet.ModelAndView
 import ru.david.web_lab3.dto.ErrorMessage
-import ru.david.web_lab3.exception.BadRequestException
+import ru.david.web_lab3.exception.BadRequest
 
 @RestControllerAdvice
-class BadRequestExceptionHandler {
-    @ExceptionHandler(BadRequestException::class)
+class BadRequestHandler {
+    @ExceptionHandler(BadRequest::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handle(e: BadRequestException) = ErrorMessage(e.message)
+    fun handle(e: BadRequest) = ErrorMessage(e.message)
 }

@@ -1,8 +1,8 @@
 package ru.david.web_lab3.exception
 
-open class BadRequestException(m: String) : RuntimeException(m)
+open class BadRequest(m: String) : RuntimeException(m)
 
-class InvalidCredentialsException : BadRequestException("invalid_credentials")
-class InvalidDataException : BadRequestException("invalid_data")
-class TokenNotFoundException : BadRequestException("token_not_found")
-class UserExistsException : BadRequestException("user_exists")
+class InvalidCredentialsException : BadRequest("invalid_credentials")
+class InvalidDataException : BadRequest("invalid_data")
+class TokenNotFoundException : BadRequest("token_not_found")
+class UserExistsException : BadRequest("user_exists")
