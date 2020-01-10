@@ -44,6 +44,8 @@ class AuthService @Autowired constructor(private val userTokenRepository: UserTo
             userTokenRepository.deleteUserTokenByUserAndToken(userRepository.findById(email).get(), token)
     }
 
-    fun checkUserAuth(email: String, token: ByteArray) =
-        userTokenRepository.findByUserAndToken(userRepository.findById(email).get(), token).isPresent
+    fun checkUserAuth(email: String, token: ByteArray): Boolean {
+        val userOptional = userRepository.findById(email)
+        return userOptional.isPresent && userTokenRepository.findByUserAndToken(userOptional.get(), token).isPresent
+    }
 }
