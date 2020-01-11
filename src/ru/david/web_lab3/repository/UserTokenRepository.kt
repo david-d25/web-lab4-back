@@ -12,5 +12,5 @@ import java.util.*
 interface UserTokenRepository : CrudRepository<UserToken, Long> {
     fun findByUserAndToken(user: User, token: ByteArray): Optional<UserToken>
     fun deleteUserTokenByUser(user: User)
-    fun deleteUserTokenByUserAndToken(user: User, token: ByteArray)
+    fun findAllByUser(user: User): List<UserToken>
 }

@@ -37,11 +37,22 @@ class AuthService @Autowired constructor(private val userTokenRepository: UserTo
     }
 
     fun logout(email: String, token: ByteArray, fromEverywhere: Boolean) {
-        if (fromEverywhere)
+        if (fromEverywhere) {
             if (checkUserAuth(email, token))
                 userTokenRepository.deleteUserTokenByUser(userRepository.findById(email).get())
-        else
-            userTokenRepository.deleteUserTokenByUserAndToken(userRepository.findById(email).get(), token)
+        } else {
+            val userOptional = userRepository.findById(email);
+            if (!userOptional.isPresent)
+                return
+            val user = userOptional.get()
+            val tokens = userTokenRepository.findAllByUser(user)
+            for (current in tokens) {
+                if (current.token?.contentEquals(token) == true) {
+                    userTokenRepository.delete(current)
+                    break
+                }
+            }
+        }
     }
 
     fun checkUserAuth(email: String, token: ByteArray): Boolean {
