@@ -41,7 +41,7 @@ class AuthService @Autowired constructor(private val userTokenRepository: UserTo
             if (checkUserAuth(email, token))
                 userTokenRepository.deleteUserTokenByUser(userRepository.findById(email).get())
         } else {
-            val userOptional = userRepository.findById(email);
+            val userOptional = userRepository.findById(email)
             if (!userOptional.isPresent)
                 return
             val user = userOptional.get()
