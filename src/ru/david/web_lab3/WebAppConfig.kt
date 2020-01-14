@@ -5,17 +5,25 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
+import org.springframework.core.Ordered
 import org.springframework.core.env.Environment
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.http.HttpStatus
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.orm.jpa.JpaTransactionManager
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.web.servlet.HandlerExceptionResolver
+import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.util.*
 import javax.annotation.Resource
 import javax.sql.DataSource
+
 
 const val PROP_DATABASE_DRIVER = "db.driver"
 const val PROP_DATABASE_PASSWORD = "db.password"
@@ -39,7 +47,7 @@ const val PROP_MAIL_FROM = "mail.from"
 @EnableJpaRepositories("ru.david.web_lab3")
 @PropertySource("classpath:app.properties")
 @ComponentScan("ru.david.web_lab3")
-open class WebAppConfig {
+open class WebAppConfig : WebMvcConfigurer {
 
     @Resource
     private val env: Environment? = null
@@ -91,5 +99,16 @@ open class WebAppConfig {
         properties["hibernate.show_sql"] = env.getRequiredProperty(PROP_HIBERNATE_SHOW_SQL)
         properties["hibernate.hbm2ddl.auto"] = env.getRequiredProperty(PROP_HIBERNATE_HBM2DDL_AUTO)
         return properties
+    }
+
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/*").addResourceLocations("/")
+    }
+
+    override fun addViewControllers(registry: ViewControllerRegistry) {
+        registry.addViewController("/").setViewName("forward:/index.html")
+        registry.addViewController("/login").setViewName("forward:/index.html")
+        registry.addViewController("/main").setViewName("forward:/index.html")
+        registry.addViewController("/register").setViewName("forward:/index.html")
     }
 }
